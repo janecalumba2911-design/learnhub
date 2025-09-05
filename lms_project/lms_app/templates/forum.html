@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<a href="{% url 'course_detail' forum.course.id %}" class="btn btn-secondary mb-3">← Back to Course</a>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold">{{ forum.title }}</h1>
+    <a href="{% url 'create_post' forum.course.id %}" class="btn btn-primary">➕ New Post</a>
+</div>
+
+{% if posts %}
+<div class="row g-3">
+    {% for post in posts %}
+    <div class="col-12">
+        <div class="card shadow-sm hover-shadow transition p-3">
+            <div class="d-flex align-items-start mb-2">
+                <!-- Avatar placeholder -->
+                <div class="me-3">
+                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width:50px; height:50px;">
+                        {{ post.user.username|slice:":1"|upper }}
+                    </div>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-1">{{ post.user.username }}</h5>
+                        <small class="text-muted">{{ post.created_at|timesince }} ago</small>
+                    </div>
+                    <p class="mb-2">{{ post.content }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info mt-3 text-center">
+    No posts in this forum yet. Be the first to start a discussion!
+</div>
+{% endif %}
+
+<style>
+.hover-shadow {
+    transition: 0.3s box-shadow;
+}
+.hover-shadow:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+</style>
+{% endblock %}

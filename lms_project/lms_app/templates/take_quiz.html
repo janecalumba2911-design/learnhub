@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Quiz: {{ quiz.title }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {% for question in questions %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="card-text"><strong>{{ forloop.counter }}.</strong> {{ question.question_text }}</p>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="question_{{ question.id }}" placeholder="Enter your answer" required>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Submit Quiz</button>
+</form>
+{% endblock %}

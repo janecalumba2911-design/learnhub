@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<a href="{% url 'manage_course' lesson.module.course.id %}" class="btn btn-secondary mb-4">
+    &larr; Back to Course Management
+</a>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Add Assignment to "{{ lesson.title }}"</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Title -->
+                    <div class="form-floating mb-3">
+                        <input type="text" 
+                               name="title" 
+                               class="form-control" 
+                               id="assignmentTitle" 
+                               placeholder="Enter Assignment Title"
+                               value="{{ form.title.value|default_if_none:'' }}">
+                        <label for="assignmentTitle">Title</label>
+                        {% if form.title.errors %}
+                            <div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-floating mb-3">
+                        <textarea name="description" 
+                                  class="form-control" 
+                                  placeholder="Enter Assignment Description" 
+                                  id="assignmentDescription"
+                                  style="height:120px;">{{ form.description.value|default_if_none:'' }}</textarea>
+                        <label for="assignmentDescription">Description</label>
+                        {% if form.description.errors %}
+                            <div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Due Date -->
+                    <div class="form-floating mb-3">
+                        <input type="datetime-local" 
+                               name="due_date" 
+                               class="form-control" 
+                               id="assignmentDueDate"
+                               value="{{ form.due_date.value|default_if_none:'' }}">
+                        <label for="assignmentDueDate">Due Date & Time</label>
+                        {% if form.due_date.errors %}
+                            <div class="text-danger small mt-1">{{ form.due_date.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-success btn-lg w-100 mt-3">
+                        Add Assignment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

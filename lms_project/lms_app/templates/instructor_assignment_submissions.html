@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<a href="{% url 'manage_course' assignment.lesson.module.course.id %}" class="btn btn-secondary mb-3">Back to Course Management</a>
+<h1>Submissions for "{{ assignment.title }}"</h1>
+<div class="card">
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            {% for submission in submissions %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ submission.user.username }}</strong>
+                        <br>
+                        <small>Submitted on: {{ submission.submitted_at|date:"F j, Y, P" }}</small>
+                        {% if submission.grade is not None %}
+                            <br><small>Grade: {{ submission.grade }}</small>
+                        {% endif %}
+                    </div>
+                    {% if submission.grade is None %}
+                        <a href="{% url 'grade_submission' submission.id %}" class="btn btn-sm btn-warning">Grade Now</a>
+                    {% else %}
+                        <span class="badge badge-success">Graded</span>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li class="list-group-item text-muted">No submissions have been made yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

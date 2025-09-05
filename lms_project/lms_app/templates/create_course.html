@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Create New Course</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Course Title -->
+                    <div class="mb-3">
+                        <label for="id_title" class="form-label">Course Title</label>
+                        <input type="text" name="title" class="form-control" id="id_title" placeholder="Enter course title" value="{{ form.title.value|default_if_none:'' }}">
+                        {% if form.title.errors %}
+                            <div class="text-danger small mt-1">{{ form.title.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Course Description -->
+                    <div class="mb-3">
+                        <label for="id_description" class="form-label">Course Description</label>
+                        <textarea name="description" class="form-control" id="id_description" rows="4" placeholder="Enter course description">{{ form.description.value|default_if_none:'' }}</textarea>
+                        {% if form.description.errors %}
+                            <div class="text-danger small mt-1">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Category -->
+                    <div class="mb-3">
+                        <label for="id_category" class="form-label">Category</label>
+                        <input type="text" name="category" class="form-control" id="id_category" placeholder="Enter course category" value="{{ form.category.value|default_if_none:'' }}">
+                        {% if form.category.errors %}
+                            <div class="text-danger small mt-1">{{ form.category.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Difficulty -->
+                    <div class="mb-3">
+                        <label for="id_difficulty" class="form-label">Difficulty</label>
+                        <input type="text" name="difficulty" class="form-control" id="id_difficulty" placeholder="Enter difficulty level" value="{{ form.difficulty.value|default_if_none:'' }}">
+                        {% if form.difficulty.errors %}
+                            <div class="text-danger small mt-1">{{ form.difficulty.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 mt-3">Create Course</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<a href="{% url 'manage_course' quiz.lesson.module.course.id %}" class="btn btn-secondary mb-4">
+    &larr; Back to Course Management
+</a>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Add Correct answer to "{{ quiz.title }}"</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Correct Answer -->
+                    <div class="form-floating mb-3">
+                        <label for="correctAnswer">Correct Answer</label>
+                        <input type="text" 
+                               name="correct_answer" 
+                               class="form-control" 
+                               id="correctAnswer" 
+                               placeholder="Enter correct answer"
+                               value="{{ form.correct_answer.value|default_if_none:'' }}">
+                        {% if form.correct_answer.errors %}
+                            <div class="text-danger small mt-1">{{ form.correct_answer.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-success btn-lg w-100 mt-3">
+                        Add Question
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

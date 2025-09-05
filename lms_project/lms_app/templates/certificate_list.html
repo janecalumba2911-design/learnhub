@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>My Certificates</h1>
+<div class="list-group">
+    {% for cert in certificates %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <h5>{{ cert.course.title }}</h5>
+                <small class="text-muted">Issued: {{ cert.issued_at|date:"F j, Y" }}</small>
+            </div>
+            <a href="#" class="btn btn-sm btn-success">Download PDF</a>
+        </li>
+    {% empty %}
+        <li class="list-group-item">No certificates earned yet.</li>
+    {% endfor %}
+</div>
+{% endblock %}

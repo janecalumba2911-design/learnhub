@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container-fluid mt-4">
+
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Dashboard</h2>
+    <a href="{% url 'create_course' %}" class="btn btn-primary">➕ Create Course</a>
+  </div>
+
+  <!-- Top Analytics Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-3 col-6">
+      <a href="{% url 'course_list' %}">
+      <div class="card text-center shadow-sm border-0 p-3 bg-primary text-white rounded-3">
+        <h6>Total Courses</h6>
+        <h2>{{ total_courses }}</h2>
+      </div>
+      </a>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card text-center shadow-sm border-0 p-3 bg-success text-white rounded-3">
+        <h6>Enrolled Students</h6>
+        <h2>{{ total_students }}</h2>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card text-center shadow-sm border-0 p-3 bg-warning text-dark rounded-3">
+        <h6>Avg Completion</h6>
+        <h2>{{ avg_completion }}%</h2>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card text-center shadow-sm border-0 p-3 bg-info text-white rounded-3">
+        <h6>Avg Quiz Score</h6>
+        <h2>{{ avg_quiz_score }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Second Row: Quiz Chart + Recent Enrollments -->
+  <div class="row g-4 mb-4">
+    <!-- Quiz Performance (larger) -->
+    <div class="col-lg-8 col-md-12">
+      <div class="card shadow-sm p-3 h-100">
+        <h5 class="mb-3">📊 Quiz Performance</h5>
+        <div style="height: 300px;">
+          <canvas id="quizChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Enrollments (smaller) -->
+    <div class="col-lg-4 col-md-12">
+      <div class="card shadow-sm p-3 h-100">
+        <h5>👥 Recent Enrollments</h5>
+        <table class="table table-hover mb-0">
+          <tbody>
+          {% for e in recent_enrollments %}
+            <tr>
+              <td><b>{{ e.user.username }}</b></td>
+              <td>{{ e.course.title }}</td>
+              <td><small>{{ e.enrolled_at|date:"M d, Y" }}</small></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="3">No recent enrollments.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Third Row: Forum, Reviews, Certificates -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 h-100">
+        <h5>💬 Forum Activity</h5>
+        <ul class="list-group list-group-flush">
+        {% for p in recent_posts %}
+          <li class="list-group-item"><b>{{ p.user.username }}</b>: {{ p.content|truncatechars:50 }}</li>
+        {% empty %}
+          <li class="list-group-item">No recent posts.</li>
+        {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 h-100">
+        <h5>⭐ Recent Reviews</h5>
+        <ul class="list-group list-group-flush">
+        {% for r in recent_reviews %}
+          <li class="list-group-item">{{ r.user.username }} rated {{ r.course.title }} ⭐{{ r.rating }}</li>
+        {% empty %}
+          <li class="list-group-item">No reviews yet.</li>
+        {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 h-100">
+        <h5>🎓 Certificates</h5>
+        <ul class="list-group list-group-flush">
+        {% for c in recent_certificates %}
+          <li class="list-group-item">{{ c.user.username }} for {{ c.course.title }}</li>
+        {% empty %}
+          <li class="list-group-item">No certificates issued yet.</li>
+        {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('quizChart').getContext('2d');
+
+    // Initialize the chart with empty data
+    const quizChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ["0-50%", "50-75%", "75-100%"],
+            datasets: [{
+                data: [0, 0, 0],
+                backgroundColor: ["#ff6384", "#ffcd56", "#4bc0c0"]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: { enabled: true }
+            }
+        }
+    });
+
+    // Fetch latest quiz data from the server
+    function updateQuizChart() {
+        fetch("{% url 'quiz_performance_api' %}")
+        .then(response => response.json())
+        .then(data => {
+            quizChart.data.labels = data.quiz_labels;
+            quizChart.data.datasets[0].data = data.quiz_data;
+            quizChart.update();
+        });
+    }
+
+    // Initial load
+    updateQuizChart();
+
+    // Auto-update every 30 seconds
+    setInterval(updateQuizChart, 30000);
+});
+</script>
+{% endblock %}

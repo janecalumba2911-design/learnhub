@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Quiz Results</h1>
+    <p class="lead">You scored <strong>{{ score }} out of {{ total }}</strong>.</p>
+    <hr class="my-4">
+    <a class="btn btn-primary btn-lg" href="{% url 'course_detail' course_id=course_id %}" role="button">Back to Course</a>
+    <a class="btn btn-secondary btn-lg ml-2" href="{% url 'dashboard' %}" role="button">Go to Dashboard</a>
+</div>
+{% endblock %}

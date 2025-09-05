@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block content %}
+<a href="{% url 'instructor_dashboard' %}" class="btn btn-secondary mb-3">Back to Dashboard</a>
+<h4>Analytics for "{{ course.title }}"</h4>
+
+<div class="row">
+    <!-- Overall Course Metrics -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Overall Course Metrics</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Total Enrolled:</strong> 
+                    <span class="badge bg-info">{{ analytics.total_enrolled }}</span>
+                </p>
+
+                <p><strong>Average Progress:</strong></p>
+                <div class="progress mb-3" style="height: 20px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ analytics.avg_progress }}%;" aria-valuenow="{{ analytics.avg_progress }}" aria-valuemin="0" aria-valuemax="100">
+                        {{ analytics.avg_progress|floatformat:"2" }}%
+                    </div>
+                </div>
+
+                <p><strong>Completion Rate:</strong></p>
+                <div class="progress mb-3" style="height: 20px;">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ analytics.completion_rate }}%;" aria-valuenow="{{ analytics.completion_rate }}" aria-valuemin="0" aria-valuemax="100">
+                        {{ analytics.completion_rate|floatformat:"2" }}%
+                    </div>
+                </div>
+
+                <p><strong>Average Quiz Score:</strong></p>
+                <div class="progress mb-3" style="height: 20px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ analytics.avg_quiz_score }}%;" aria-valuenow="{{ analytics.avg_quiz_score }}" aria-valuemin="0" aria-valuemax="100">
+                        {{ analytics.avg_quiz_score|floatformat:"2" }}%
+                    </div>
+                </div>
+
+                <p class="text-muted"><small>Last Updated: {{ analytics.last_updated }}</small></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submissions to Grade -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">Submissions to Grade</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for submission in submissions %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center hover-shadow">
+                        <div>
+                            <strong>{{ submission.assignment.title }}</strong>
+                            <br>
+                            <small class="text-muted">by {{ submission.user.username }}</small>
+                        </div>
+                        <a href="{% url 'grade_submission' submission.id %}" class="btn btn-sm btn-warning">Grade Now</a>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">No pending submissions.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- All Assignments & Quizzes remain unchanged -->
+<h4 class="mt-4">All Assignments & Quizzes</h4>
+<div class="row">
+    {% for module in course.module_set.all %}
+        {% for lesson in module.lesson_set.all %}
+            {% if lesson.assignment_set.exists %}
+                {% with assignment=lesson.assignment_set.first %}
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ assignment.title }}</h5>
+                                <p class="card-text">Total Submissions: {{ assignment.submission_set.count }}</p>
+                                <a href="{% url 'assignment_submissions_for_instructor' assignment.id %}" class="btn btn-info btn-sm">View All Submissions</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+            {% endif %}
+
+            {% if lesson.quiz_set.exists %}
+                {% with quiz=lesson.quiz_set.first %}
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ quiz.title }}</h5>
+                                <p class="card-text">Total Questions: {{ quiz.question_set.count }}</p>
+                                <a href="{% url 'quiz_results_for_instructor' quiz.id %}" class="btn btn-primary btn-sm">View All Results</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+</div>
+
+<!-- Optional CSS for hover effect -->
+<style>
+.hover-shadow:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: box-shadow 0.3s ease-in-out;
+}
+</style>
+{% endblock %}

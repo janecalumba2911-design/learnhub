@@ -1,0 +1,213 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Container */
+    .signup-container {
+      display: flex;
+      height: 100vh; /* Full height */
+      overflow: hidden; /* Prevent body scroll */
+    }
+
+    /* Left side image (fixed steady) */
+    .signup-image {
+      flex: 1;
+      background: url("{% static 'icons/login.jpg' %}") no-repeat center center;
+      background-size: cover;
+      position: fixed; /* Fixed so it doesn’t move */
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 50%; /* Cover half screen */
+    }
+
+    /* Right side form */
+    .signup-form-wrapper {
+      flex: 1;
+      margin-left: 50%; /* Push form to right half */
+      height: 100vh;
+      overflow-y: auto; /* Scroll only here */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #f8f9fa;
+      padding: 40px;
+    }
+
+    .signup-card {
+      width: 100%;
+      max-width: 500px;
+      padding: 35px;
+      border-radius: 15px;
+      background: #fff;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+
+    .signup-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .signup-card h3 {
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.7rem;
+    }
+
+    /* Inputs */
+    .form-control {
+      height: 45px;
+      font-size: 1rem;
+    }
+
+    /* Bio (textarea) */
+    textarea.form-control {
+      height: 100px !important;
+      resize: vertical;
+    }
+
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      border-radius: 8px;
+      font-weight: bold;
+      padding: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: #0056b3;
+      transform: scale(1.02);
+    }
+
+    .extra-links {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.95rem;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .signup-container {
+        flex-direction: column;
+      }
+
+      .signup-image {
+        display: none; 
+      }
+
+      .signup-form-wrapper {
+        position: relative;
+        margin-left: 0;
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      /* Blurred background */
+      .signup-form-wrapper::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("{% static 'icons/login.jpg' %}") no-repeat center center;
+        background-size: cover;
+        filter: blur(6px);
+        z-index: 0;
+      }
+
+      /* Form stays above */
+      .signup-card {
+        position: relative;
+        z-index: 1;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 2rem;
+        width: 100%;
+        max-width: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    
+    <!-- Left side steady image -->
+    <div class="signup-image"></div>
+
+    <!-- Right side form -->
+    <div class="signup-form-wrapper">
+      <div class="signup-card">
+        <h3>Create Your Account</h3>
+        <form method="post">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+
+          <div class="form-group">
+            {{ form.username.label_tag }}
+            {{ form.username|add_class:"form-control" }}
+          </div>
+
+          <div class="form-group">
+            {{ form.password1.label_tag }}
+            {{ form.password1|add_class:"form-control" }}
+          </div>
+
+          <div class="form-group">
+            {{ form.password2.label_tag }}
+            {{ form.password2|add_class:"form-control" }}
+          </div>
+
+          <div class="form-group">
+            {{ form.role.label_tag }}
+            {{ form.role|add_class:"form-control" }}
+          </div>
+
+          <div class="form-group">
+            {{ form.bio.label_tag }}
+            {{ form.bio|add_class:"form-control" }}
+          </div>
+
+          <div class="form-group">
+            {{ form.skills.label_tag }}
+            {{ form.skills|add_class:"form-control" }}
+          </div>
+
+          <div class="form-group">
+            {{ form.interests.label_tag }}
+            {{ form.interests|add_class:"form-control" }}
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+        </form>
+
+        <div class="extra-links">
+          <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

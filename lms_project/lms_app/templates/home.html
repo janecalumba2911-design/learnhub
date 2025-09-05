@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Hero Section -->
+<div class="jumbotron text-center bg-light py-5 mb-5" style="background: linear-gradient(to right, #4facfe, #00f2fe); color: white;">
+  <h1 class="display-4 fw-bold">Welcome to the LMS Platform!</h1>
+  <p class="lead">A place to learn, grow, and unlock your potential.</p>
+  <hr class="my-4 bg-white">
+  <p>Browse our extensive course catalog or log in to access your dashboard.</p>
+  <a class="btn btn-primary btn-lg me-2 shadow" href="{% url 'course_list' %}" role="button">Browse Courses</a>
+  {% if not user.is_authenticated %}
+    <a class="btn btn-outline-light btn-lg shadow" href="{% url 'signup' %}" role="button">Join Now</a>
+  {% else %}
+    <a class="btn btn-success btn-lg shadow" href="{% url 'dashboard' %}" role="button">Go to Dashboard</a>
+  {% endif %}
+</div>
+
+<!-- Features Section -->
+<div class="container-fluid my-5">
+  <div class="row text-center">
+    <div class="col-md-4 mb-4">
+      <i class="fas fa-book-open fa-3x mb-3 text-primary"></i>
+      <h4>Wide Range of Courses</h4>
+      <p>Explore topics from programming to personal growth, all in one place.</p>
+    </div>
+    <div class="col-md-4 mb-4">
+      <i class="fas fa-chalkboard-teacher fa-3x mb-3 text-success"></i>
+      <h4>Expert Instructors</h4>
+      <p>Learn directly from industry professionals and certified mentors.</p>
+    </div>
+    <div class="col-md-4 mb-4">
+      <i class="fas fa-certificate fa-3x mb-3 text-warning"></i>
+      <h4>Earn Certificates</h4>
+      <p>Showcase your achievements with shareable certificates.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Popular Courses Section -->
+<div class="container-fluid my-5">
+  <h2 class="text-center mb-4">Popular Courses</h2>
+  <div class="row">
+    {% for course in courses %}
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100 position-relative">
+
+          <!-- Course Number -->
+          <span class="badge badge-primary position-absolute" 
+                style="top: 10px; left: 10px; font-size: 0.9rem; padding: 5px 10px;">
+            #{{ forloop.counter }}
+          </span>
+
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ course.title }}</h5>
+            <p class="card-text">{{ course.description|truncatewords:20 }}</p>
+            <a href="{% url 'course_detail' course.id %}" class="btn btn-primary mt-auto">View Course</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center">No courses available at the moment.</p>
+    {% endfor %}
+  </div>
+</div>
+
+
+<!-- Testimonials Section -->
+<div class="py-5" style="background: linear-gradient(to right, #4facfe, #00f2fe); color: white;">
+  <div class="container-fluid">
+    <h2 class="text-center mb-4">What Our Students Say</h2>
+    <div id="testimonialCarousel" class="carousel slide" data-ride="carousel" data-interval="2000">
+      
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <li data-target="#testimonialCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#testimonialCarousel" data-slide-to="1"></li>
+        <li data-target="#testimonialCarousel" data-slide-to="2"></li>
+      </ol>
+
+      <!-- Slides -->
+      <div class="carousel-inner text-center">
+        <div class="carousel-item active">
+          <blockquote class="blockquote">
+            <p class="mb-4">"This platform helped me land my first tech job. Highly recommended!"</p>
+            <footer class="blockquote-footer text-white">John D.</footer>
+          </blockquote>
+        </div>
+        <div class="carousel-item">
+          <blockquote class="blockquote">
+            <p class="mb-4">"The courses are clear, practical, and easy to follow."</p>
+            <footer class="blockquote-footer text-white">Maria S.</footer>
+          </blockquote>
+        </div>
+        <div class="carousel-item">
+          <blockquote class="blockquote">
+            <p class="mb-4">"Earning certificates gave me the confidence to apply for promotions."</p>
+            <footer class="blockquote-footer text-white">Alex P.</footer>
+          </blockquote>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <a class="carousel-control-prev" href="#testimonialCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </a>
+      <a class="carousel-control-next" href="#testimonialCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

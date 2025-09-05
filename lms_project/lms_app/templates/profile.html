@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4 text-center">
+        {% if profile.photo %}
+            <img src="{{ profile.photo.url }}" alt="Profile Photo" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+        {% else %}
+            <div class="p-5 bg-light rounded-circle d-inline-block mb-3" style="width: 150px; height: 150px;">
+                <i class="fas fa-user-circle fa-5x text-secondary"></i>
+            </div>
+        {% endif %}
+        <h2>{{ user.username }}</h2>
+        <span class="badge badge-info">{{ profile.role }}</span>
+        <p class="text-muted">{{ user.email }}</p>
+        <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary">Edit Profile</a>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Bio</h5>
+                <p class="card-text">{{ profile.bio|default:"No bio provided." }}</p>
+                <h5 class="card-title mt-4">Skills & Interests</h5>
+                <p><strong>Skills:</strong> {{ profile.skills|default:"N/A" }}</p>
+                <p><strong>Interests:</strong> {{ profile.interests|default:"N/A" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
